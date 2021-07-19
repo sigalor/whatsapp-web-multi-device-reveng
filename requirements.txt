@@ -1,4 +1,5 @@
 websocket
+websocket-client
 pypng
 curve25519-donna
 pyqrcode
