@@ -26,4 +26,4 @@ This PoC generates the QR code needed for logging in to WhatsApp Web. This is up
 # 4. After scanning the QR code
 
 - If multi-device is _not_ enabled on the phone you scan the QR code with, everything continues to work like normal.
-- If multi-device is enabled, you will receive the following message: `["Cmd",{"type":"upgrade_md_prod","version":"2.2126.11"}]`. This indicates that you must now initialize your multi-device connection as described in [`poc02_initialize_multi_device`](/pocs/pocs02_initialize_multi_device.md).
+- If multi-device is enabled, you will receive the following message: `["Cmd",{"type":"upgrade_md_prod","version":"2.2126.11"}]`. This indicates that you must now initialize your multi-device connection as described in [`poc02_initialize_multi_device`](/pocs/poc02_initialize_multi_device.md).
