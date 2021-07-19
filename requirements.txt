@@ -2,3 +2,4 @@ websocket
 pypng
 curve25519-donna
 pyqrcode
+dissononce
