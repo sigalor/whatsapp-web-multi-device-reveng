@@ -1,7 +1,6 @@
-
 # Inspecting the Web App
 
-In order to be able to trace back function calls and their parameters we need a way to push arbritary code into the website/electron web app.
+In order to be able to trace back function calls and their parameters we need a way to push arbritrary code into the website/electron web app.
 
 One way to do this is to inject modified JavaScript into the WhatsApp Web Desktop Electron App
 
@@ -15,9 +14,9 @@ Run `npm install -g asar` which will help us extracting and packaging JS content
 
 ### Injecting JS into the app
 
-`cd` into a new folder and then run `asar extract [WA]../app.asar .`. For macOS with standard paths, you would do  `asar extract /Applications/WhatsApp.app/Contents/Resources/app.asar .`
+`cd` into a new folder and then run `asar extract [WA]../app.asar .`. For macOS with standard paths, you would do `asar extract /Applications/WhatsApp.app/Contents/Resources/app.asar .`
 
-You should now see all kinds of JS, CSS etc. files in that folder. Our point of interest is mainly the `bootstrap_main.123456789.js`. 
+You should now see all kinds of JS, CSS etc. files in that folder. Our point of interest is mainly the `bootstrap_main.123456789.js`.
 
 After editing the file(s), we do the reverse operation to put the new files back into the `app.asar`. For this, you can run `asar pack . /Applications/WhatsApp.app/Contents/Resources/app.asar` on macOS, replace the path for Windows/Linux.
 
