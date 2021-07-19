@@ -10,6 +10,12 @@ To execute the current demo code, just run the following (note that a file `qr.p
 python3 main.py
 ```
 
+## Research Contents
+
+- [Inspecting the Web App](/inspect-app.md): Pushing arbritary code into the WhatsApp Electron web app.
+
+Apart from that, look through the Markdown files in the `pocs` subdirectory for more.
+
 ## License
 
 MIT
