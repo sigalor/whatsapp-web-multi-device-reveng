@@ -70,14 +70,10 @@ def on_open(ws):
   ws.send(get_message_tag("ask_for_qr") + "," + payload)
 
 
-def on_close(ws):
-  pass
-
-
 def main():
   global ws
   ws = websocket.WebSocketApp("wss://web.whatsapp.com/ws", on_message=on_message,
-                              on_open=on_open, on_close=on_close, header={"Origin: https://web.whatsapp.com"})
+                              on_open=on_open, header={"Origin: https://web.whatsapp.com"})
   ws.run_forever()
 
 
