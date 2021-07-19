@@ -4,8 +4,8 @@ This PoC generates the QR code needed for logging in to WhatsApp Web. This is up
 
 ## 1. Connecting to the websocket
 
-- simply open a WebSocket connection to `wss://web.whatsapp.com/ws`
-- the HTTP header `Origin: https://web.whatsapp.com` must be set, otherwise the connection will be rejected
+- Simply open a WebSocket connection to `wss://web.whatsapp.com/ws`.
+- The HTTP header `Origin: https://web.whatsapp.com` must be set, otherwise the connection will be rejected.
 
 ## 2. Asking for the QR code
 
@@ -20,3 +20,10 @@ This PoC generates the QR code needed for logging in to WhatsApp Web. This is up
 - a boolean which is `true` if you're not in incognito mode and checked "Remember me"
 
 # 3. Generating the QR code
+
+- This works in exactly the same way as before, see [here](https://github.com/sigalor/whatsapp-web-reveng#qr-code-generation).
+
+# 4. After scanning the QR code
+
+- If multi-device is _not_ enabled on the phone you scan the QR code with, everything continues to work like normal.
+- If multi-device is enabled, you will receive the following message: `["Cmd",{"type":"upgrade_md_prod","version":"2.2126.11"}]`. This indicates that you must now initialize your multi-device connection as described in [`02-initialize-multi-device`](/pocs/02-initialize-multi-device.md).

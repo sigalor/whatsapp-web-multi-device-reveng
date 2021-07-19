@@ -1,27 +1,26 @@
 #!/usr/bin/env python3
 
-import sys
 import os
 import websocket
-import time
-import base64
 import json
 import curve25519
 import pyqrcode
 import traceback
 
+from .utilities import *
+from .poc02_initialize_multi_device import initialize_multi_device
+
 message_index = 0
 ws = None
 client_id = None
-tags_map = {}  # stores the tags of all sent messages so that their responses can be matched
 
 server_ref = None
 private_key = None
 public_key = None
 
 
-def get_timestamp():
-  return int(time.time())
+message_index = 0
+tags_map = {}  # stores the tags of all sent messages so that their responses can be matched
 
 
 def get_message_tag(name):
@@ -30,18 +29,6 @@ def get_message_tag(name):
   tags_map[tag] = name
   message_index += 1
   return tag
-
-
-def eprint(*args, **kwargs):  # from https://stackoverflow.com/a/14981125
-  print(*args, file=sys.stderr, **kwargs)
-
-
-def to_base64(data):
-  return base64.b64encode(data).decode("utf8")
-
-
-def generate_qr_code():
-  pass
 
 
 def on_message(ws, message):
@@ -70,6 +57,7 @@ def on_message(ws, message):
         print("created QR code: " + qr_code_data)
     elif isinstance(content_parsed, list) and content_parsed[0] == "Cmd" and content_parsed[1]["type"] == "upgrade_md_prod":
       print("switching to multi-device communication protocol")
+      initialize_multi_device()
   except:
     eprint(traceback.format_exc())
 
@@ -86,6 +74,12 @@ def on_close(ws):
   pass
 
 
-ws = websocket.WebSocketApp("wss://web.whatsapp.com/ws", on_message=on_message,
-                            on_open=on_open, on_close=on_close, header={"Origin: https://web.whatsapp.com"})
-ws.run_forever()
+def main():
+  global ws
+  ws = websocket.WebSocketApp("wss://web.whatsapp.com/ws", on_message=on_message,
+                              on_open=on_open, on_close=on_close, header={"Origin: https://web.whatsapp.com"})
+  ws.run_forever()
+
+
+if __name__ == '__main__':
+  main()
