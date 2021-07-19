@@ -36,6 +36,10 @@ def eprint(*args, **kwargs):  # from https://stackoverflow.com/a/14981125
   print(*args, file=sys.stderr, **kwargs)
 
 
+def to_base64(data):
+  return base64.b64encode(data).decode("utf8")
+
+
 def generate_qr_code():
   pass
 
@@ -44,32 +48,35 @@ def on_message(ws, message):
   global server_ref, private_key, public_key, tags_map
 
   try:
-    [tag, content] = message.split(",", 1)
-    if tag not in tags_map:
-      print(content)
+    if isinstance(message, bytes):
+      print("received bytes, which is not supported by this code, use a phone where multi-device is enabled instead")
+      ws.close()
       return
 
-    tag_name = tags_map[tag]
-    del tags_map[tag]
+    [tag, content] = message.split(",", 1)
+    content_parsed = json.loads(content)
 
-    if tag_name == "ask_for_qr":
-      server_ref = json.loads(content)["ref"]
-      private_key = curve25519.Private()
-      public_key = private_key.get_public()
-      qr_code_data = server_ref + "," + \
-          str(base64.b64encode(public_key.serialize())) + "," + client_id
-      pyqrcode.create(qr_code_data).png("qr.png", scale=6)
+    if tag in tags_map:
+      tag_name = tags_map[tag]
+      del tags_map[tag]
+
+      if tag_name == "ask_for_qr":
+        server_ref = content_parsed["ref"]
+        private_key = curve25519.Private()
+        public_key = private_key.get_public()
+        qr_code_data = server_ref + "," + \
+            to_base64(public_key.serialize()) + "," + client_id
+        pyqrcode.create(qr_code_data, error="L").png("qr.png", scale=6)
+        print("created QR code: " + qr_code_data)
+    elif isinstance(content_parsed, list) and content_parsed[0] == "Cmd" and content_parsed[1]["type"] == "upgrade_md_prod":
+      print("switching to multi-device communication protocol")
   except:
     eprint(traceback.format_exc())
 
 
-def on_error(ws, error):
-  pass
-
-
 def on_open(ws):
   global client_id
-  client_id = str(base64.b64encode(os.urandom(16)))
+  client_id = to_base64(os.urandom(16))
   payload = json.dumps(["admin", "init", [2, 2126, 11], [
       "Linux", "Chrome", "x86_64"], client_id, True], separators=(',', ':'))
   ws.send(get_message_tag("ask_for_qr") + "," + payload)
@@ -79,6 +86,6 @@ def on_close(ws):
   pass
 
 
-ws = websocket.WebSocketApp("wss://web.whatsapp.com/ws", on_message=on_message, on_error=on_error,
+ws = websocket.WebSocketApp("wss://web.whatsapp.com/ws", on_message=on_message,
                             on_open=on_open, on_close=on_close, header={"Origin: https://web.whatsapp.com"})
 ws.run_forever()
