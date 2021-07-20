@@ -3,3 +3,4 @@ pypng
 curve25519-donna
 pyqrcode
 dissononce
+consonance
